@@ -13,7 +13,7 @@ public abstract class Tile {
     public static final Tile WATER = new AnimatedTile(3, new int[][] { { 0, 5 }, { 1, 5 }, { 2, 5 }, { 1, 5 } },
             Colours.get(-1, 004, 115, -1), 0xFF0000FF, 1000);
     public static final Tile LAVA = new AnimatedTile(4, new int[][] { { 0, 5 }, { 1, 5 }, { 2, 5 }, { 1, 5 } },
-            Colours.get(-1, 252, 180, -1), 0xFFFF0000, 1000);
+            Colours.get(-1, 300, 161, -1), 0xFFFF0000, 1000);
     protected byte id;
     protected boolean solid;
     protected boolean emitter;

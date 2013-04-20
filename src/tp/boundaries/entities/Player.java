@@ -11,7 +11,7 @@ import tp.boundaries.net.packets.Packet02Move;
 public class Player extends Mob {
 
     private InputHandler input;
-    private int colour = Colours.get(-1, 111, 145, 543);
+    private int colour = Colours.get(-1, 111, 100, 543);
     private int scale = 1;
     protected boolean isSwimming = false;
     protected boolean isLavaing = false;
@@ -57,10 +57,10 @@ public class Player extends Mob {
         if (isSwimming && level.getTile(this.x >> 3, this.y >> 3).getId() != 3) {
             isSwimming = false;
         }
-        if (level.getTile(this.x >> 3, this.y >> 3).getId() == 3) {
+        if (level.getTile(this.x >> 3, this.y >> 3).getId() == 4) {
             isLavaing = true;
         }
-        if (isLavaing && level.getTile(this.x >> 3, this.y >> 3).getId() != 3) {
+        if (isLavaing && level.getTile(this.x >> 3, this.y >> 3).getId() != 4) {
             isLavaing = false;
         }
         tickCount++;
@@ -83,6 +83,7 @@ public class Player extends Mob {
         int modifier = 8 * scale;
         int xOffset = x - modifier / 2;
         int yOffset = y - modifier / 2 - 4;
+        
         if (isSwimming) {
             int waterColour = 0;
             yOffset += 4;
@@ -100,34 +101,28 @@ public class Player extends Mob {
             screen.render(xOffset, yOffset + 3, 0 + 27 * 32, waterColour, 0x00, 1);
             screen.render(xOffset + 8, yOffset + 3, 0 + 27 * 32, waterColour, 0x01, 1);
         }
-        if (isLavaing & !isSwimming) {
+        if (isLavaing) {
             int lavaColour = 0;
             yOffset += 4;
             if (tickCount % 60 < 15) {
-                lavaColour = Colours.get(-1, -1, 280, -1);
+                lavaColour = Colours.get(-1, -1, 496, -1);
             } else if (15 <= tickCount % 60 && tickCount % 60 < 30) {
                 yOffset -= 1;
-                lavaColour = Colours.get(-1, 280, 180, -1);
+                lavaColour = Colours.get(-1, 496, 161, -1);
             } else if (30 <= tickCount % 60 && tickCount % 60 < 45) {
-                lavaColour = Colours.get(-1, 180, -1, 280);
+                lavaColour = Colours.get(-1, 161, -1, 496);
             } else {
                 yOffset -= 1;
-                lavaColour = Colours.get(-1, 280, 180, -1);
+                lavaColour = Colours.get(-1, 496, 161, -1);
             }
             screen.render(xOffset, yOffset + 3, 0 + 27 * 32, lavaColour, 0x00, 1);
             screen.render(xOffset + 8, yOffset + 3, 0 + 27 * 32, lavaColour, 0x01, 1);
         }
+        
         screen.render(xOffset + (modifier * flipTop), yOffset, xTile + yTile * 32, colour, flipTop, scale);
-        screen.render(xOffset + modifier - (modifier * flipTop), yOffset, (xTile + 1) + yTile * 32, colour, flipTop,
-                scale);
+        screen.render(xOffset + modifier - (modifier * flipTop), yOffset, (xTile + 1) + yTile * 32, colour, flipTop, scale);
 
-        if (!isSwimming) {
-            screen.render(xOffset + (modifier * flipBottom), yOffset + modifier, xTile + (yTile + 1) * 32, colour,
-                    flipBottom, scale);
-            screen.render(xOffset + modifier - (modifier * flipBottom), yOffset + modifier, (xTile + 1) + (yTile + 1)
-                    * 32, colour, flipBottom, scale);
-        }
-        if (!isLavaing) {
+        if (!isSwimming && !isLavaing) {
             screen.render(xOffset + (modifier * flipBottom), yOffset + modifier, xTile + (yTile + 1) * 32, colour,
                     flipBottom, scale);
             screen.render(xOffset + modifier - (modifier * flipBottom), yOffset + modifier, (xTile + 1) + (yTile + 1)

@@ -7,14 +7,18 @@ public abstract class Mob extends Entity {
 
     protected String name;
     protected int speed;
+    protected int hp = 100;
+    protected int pLevel = 1;
     protected int numSteps = 0;
     protected boolean isMoving;
     protected int movingDir = 1;
     protected int scale = 1;
 
-    public Mob(Level level, String name, int x, int y, int speed) {
+    public Mob(Level level, String name, int hp, int pLevel, int x, int y, int speed) {
         super(level);
         this.name = name;
+        this.hp = hp;
+        this.pLevel = pLevel;
         this.x = x;
         this.y = y;
         this.speed = speed;
@@ -58,6 +62,14 @@ public abstract class Mob extends Entity {
 
     public String getName() {
         return name;
+    }
+    
+    public int getHp() {
+        return hp;
+    }
+    
+    public int getpLevel() {
+    	return pLevel;
     }
 
     public int getNumSteps() {

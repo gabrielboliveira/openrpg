@@ -6,7 +6,7 @@ import tp.boundaries.net.GameServer;
 public class Packet02Move extends Packet {
 
     private String username;
-    private int x, y;
+    private int hp, pLevel, x, y;
 
     private int numSteps = 0;
     private boolean isMoving;
@@ -16,16 +16,20 @@ public class Packet02Move extends Packet {
         super(02);
         String[] dataArray = readData(data).split(",");
         this.username = dataArray[0];
-        this.x = Integer.parseInt(dataArray[1]);
-        this.y = Integer.parseInt(dataArray[2]);
-        this.numSteps = Integer.parseInt(dataArray[3]);
-        this.isMoving = Integer.parseInt(dataArray[4]) == 1;
-        this.movingDir = Integer.parseInt(dataArray[5]);
+        this.hp = Integer.parseInt(dataArray[1]);
+        this.pLevel = Integer.parseInt(dataArray[2]);
+        this.x = Integer.parseInt(dataArray[3]);
+        this.y = Integer.parseInt(dataArray[4]);
+        this.numSteps = Integer.parseInt(dataArray[5]);
+        this.isMoving = Integer.parseInt(dataArray[6]) == 1;
+        this.movingDir = Integer.parseInt(dataArray[7]);
     }
 
-    public Packet02Move(String username, int x, int y, int numSteps, boolean isMoving, int movingDir) {
+    public Packet02Move(String username, int hp, int pLevel, int x, int y, int numSteps, boolean isMoving, int movingDir) {
         super(02);
         this.username = username;
+        this.hp = hp;
+        this.pLevel = pLevel;
         this.x = x;
         this.y = y;
         this.numSteps = numSteps;
@@ -45,13 +49,21 @@ public class Packet02Move extends Packet {
 
     @Override
     public byte[] getData() {
-        return ("02" + this.username + "," + this.x + "," + this.y + "," + this.numSteps + "," + (isMoving ? 1 : 0)
+        return ("02" + this.username + "," + this.hp + "," + this.pLevel + "," + this.x + "," + this.y + "," + this.numSteps + "," + (isMoving ? 1 : 0)
                 + "," + this.movingDir).getBytes();
 
     }
 
     public String getUsername() {
         return username;
+    }
+    
+    public int getHp() {
+    	return hp;
+    }
+    
+    public int getpLevel() {
+    	return pLevel;
     }
 
     public int getX() {

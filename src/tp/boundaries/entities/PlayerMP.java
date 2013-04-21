@@ -10,14 +10,14 @@ public class PlayerMP extends Player {
     public InetAddress ipAddress;
     public int port;
 
-    public PlayerMP(Level level, int x, int y, InputHandler input, String username, InetAddress ipAddress, int port) {
-        super(level, x, y, input, username);
+    public PlayerMP(Level level, int x, int y, InputHandler input, String username, int hp, int pLevel, InetAddress ipAddress, int port) {
+        super(level, x, y, input, username, hp, pLevel);
         this.ipAddress = ipAddress;
         this.port = port;
     }
 
-    public PlayerMP(Level level, int x, int y, String username, InetAddress ipAddress, int port) {
-        super(level, x, y, null, username);
+    public PlayerMP(Level level, int x, int y, String username, int hp, int pLevel, InetAddress ipAddress, int port) {
+        super(level, x, y, null, username, hp, pLevel);
         this.ipAddress = ipAddress;
         this.port = port;
     }

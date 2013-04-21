@@ -56,7 +56,7 @@ public class GameServer extends Thread {
             packet = new Packet00Login(data);
             System.out.println("[" + address.getHostAddress() + ":" + port + "] "
                     + ((Packet00Login) packet).getUsername() + " has connected...");
-            PlayerMP player = new PlayerMP(game.level, 100, 100, ((Packet00Login) packet).getUsername(), address, port);
+            PlayerMP player = new PlayerMP(game.level, 100, 100, ((Packet00Login) packet).getUsername(), ((Packet00Login) packet).getHp(), ((Packet00Login) packet).getpLevel(), address, port);
             this.addConnection(player, (Packet00Login) packet);
             break;
         case DISCONNECT:
@@ -89,7 +89,7 @@ public class GameServer extends Thread {
 
                 // relay to the new player that the currently connect player
                 // exists
-                packet = new Packet00Login(p.getUsername(), p.x, p.y);
+                packet = new Packet00Login(p.getUsername(), p.getHp(), p.getpLevel(), p.x, p.y);
                 sendData(packet.getData(), player.ipAddress, player.port);
             }
         }

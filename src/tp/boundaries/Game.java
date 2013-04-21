@@ -70,11 +70,10 @@ public class Game extends Canvas implements Runnable {
         screen = new Screen(WIDTH, HEIGHT, new SpriteSheet("/sprite_sheet.png"));
         input = new InputHandler(this);
         level = new Level("/levels/water_test_level.png");
-        player = new PlayerMP(level, 100, 100, input, JOptionPane.showInputDialog(this, "Por favor, digite o seu nome:"),
-                null, -1);
+        player = new PlayerMP(level, 100, 100, input, JOptionPane.showInputDialog(this, "Por favor, digite o seu nome:"), 100, 1, null, -1);
         level.addEntity(player);
         if (!isApplet) {
-            Packet00Login loginPacket = new Packet00Login(player.getUsername(), player.x, player.y);
+            Packet00Login loginPacket = new Packet00Login(player.getUsername(), player.getHp(), player.getpLevel(), player.x, player.y);
             if (socketServer != null) {
                 socketServer.addConnection((PlayerMP) player, loginPacket);
             }

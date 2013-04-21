@@ -17,11 +17,14 @@ public class Player extends Mob {
     protected boolean isLavaing = false;
     private int tickCount = 0;
     private String username;
+    private int hp, pLevel;
 
-    public Player(Level level, int x, int y, InputHandler input, String username) {
-        super(level, "Player", x, y, 1);
+    public Player(Level level, int x, int y, InputHandler input, String username, int hp, int pLevel) {
+        super(level, "Player", hp, pLevel, x, y, 1);
         this.input = input;
         this.username = username;
+        this.hp = hp;
+        this.pLevel = pLevel;
     }
 
     public void tick() {
@@ -45,7 +48,7 @@ public class Player extends Mob {
             move(xa, ya);
             isMoving = true;
 
-            Packet02Move packet = new Packet02Move(this.getUsername(), this.x, this.y, this.numSteps, this.isMoving,
+            Packet02Move packet = new Packet02Move(this.getUsername(), this.getHp(), this.getpLevel(), this.x, this.y, this.numSteps, this.isMoving,
                     this.movingDir);
             packet.writeData(Game.game.socketClient);
         } else {
@@ -59,6 +62,8 @@ public class Player extends Mob {
         }
         if (level.getTile(this.x >> 3, this.y >> 3).getId() == 4) {
             isLavaing = true;
+            if (tickCount % 120 == 1)
+            	hp -= 10;
         }
         if (isLavaing && level.getTile(this.x >> 3, this.y >> 3).getId() != 4) {
             isLavaing = false;
@@ -133,6 +138,16 @@ public class Player extends Mob {
                     Colours.get(-1, -1, -1, 555), 1);
         }
         
+        if (hp > 0) {
+            Font.render(Integer.toString(hp), screen, xOffset + 2 * username.length(), yOffset - 20,
+                    Colours.get(-1, -1, 215, 511), 1);
+        }
+        
+        if (pLevel != 0) {
+            Font.render("Lv." + Integer.toString(pLevel) + " ", screen, xOffset - 5 * username.length(), yOffset - 20,
+                    Colours.get(-1, -1, 215, 553), 1);
+        }
+        
     }
 
     public boolean hasCollided(int xa, int ya) {
@@ -166,5 +181,5 @@ public class Player extends Mob {
     public String getUsername() {
         return this.username;
     }
-    
+     
 }

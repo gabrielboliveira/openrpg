@@ -6,7 +6,7 @@ import tp.boundaries.net.GameServer;
 public class Packet02Move extends Packet {
 
     private String username;
-    private int hp, pLevel, x, y;
+    private int hp, pLevel, x, y ,uID;
 
     private int numSteps = 0;
     private boolean isMoving;
@@ -15,18 +15,20 @@ public class Packet02Move extends Packet {
     public Packet02Move(byte[] data) {
         super(02);
         String[] dataArray = readData(data).split(",");
-        this.username = dataArray[0];
-        this.hp = Integer.parseInt(dataArray[1]);
-        this.pLevel = Integer.parseInt(dataArray[2]);
-        this.x = Integer.parseInt(dataArray[3]);
-        this.y = Integer.parseInt(dataArray[4]);
-        this.numSteps = Integer.parseInt(dataArray[5]);
-        this.isMoving = Integer.parseInt(dataArray[6]) == 1;
-        this.movingDir = Integer.parseInt(dataArray[7]);
+        this.uID = Integer.parseInt(dataArray[0]);
+        this.username = dataArray[1];
+        this.hp = Integer.parseInt(dataArray[2]);
+        this.pLevel = Integer.parseInt(dataArray[3]);
+        this.x = Integer.parseInt(dataArray[4]);
+        this.y = Integer.parseInt(dataArray[5]);
+        this.numSteps = Integer.parseInt(dataArray[6]);
+        this.isMoving = Integer.parseInt(dataArray[7]) == 1;
+        this.movingDir = Integer.parseInt(dataArray[8]);
     }
 
-    public Packet02Move(String username, int hp, int pLevel, int x, int y, int numSteps, boolean isMoving, int movingDir) {
+    public Packet02Move(int uID, String username, int hp, int pLevel, int x, int y, int numSteps, boolean isMoving, int movingDir) {
         super(02);
+        this.uID = uID;
         this.username = username;
         this.hp = hp;
         this.pLevel = pLevel;
@@ -49,9 +51,13 @@ public class Packet02Move extends Packet {
 
     @Override
     public byte[] getData() {
-        return ("02" + this.username + "," + this.hp + "," + this.pLevel + "," + this.x + "," + this.y + "," + this.numSteps + "," + (isMoving ? 1 : 0)
+        return ("02" + this.uID + "," + this.username + "," + this.hp + "," + this.pLevel + "," + this.x + "," + this.y + "," + this.numSteps + "," + (isMoving ? 1 : 0)
                 + "," + this.movingDir).getBytes();
 
+    }
+    
+    public int getUID(){
+    	return this.uID;
     }
 
     public String getUsername() {

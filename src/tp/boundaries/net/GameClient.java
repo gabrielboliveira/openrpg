@@ -61,12 +61,13 @@ public class GameClient extends Thread {
         case DISCONNECT:
             packet = new Packet01Disconnect(data);
             System.out.println("[" + address.getHostAddress() + ":" + port + "] "
-                    + ((Packet01Disconnect) packet).getUsername() + " has left the world...");
-            game.level.removePlayerMP(((Packet01Disconnect) packet).getUsername());
+                    + ((Packet01Disconnect) packet).getUID() + " has left the world...");
+            game.level.removePlayerMP(((Packet01Disconnect) packet).getUID());
             break;
         case MOVE:
             packet = new Packet02Move(data);
             handleMove((Packet02Move) packet);
+            break;
         }
     }
 
@@ -84,12 +85,12 @@ public class GameClient extends Thread {
     private void handleLogin(Packet00Login packet, InetAddress address, int port) {
         System.out.println("[" + address.getHostAddress() + ":" + port + "] " + packet.getUsername()
                 + " has joined the game...");
-        PlayerMP player = new PlayerMP(game.level, packet.getX(), packet.getY(), packet.getUsername(), packet.getHp(), packet.getpLevel(), address, port);
+        PlayerMP player = new PlayerMP(game.level, packet.getUID(), packet.getUsername(), packet.getX(), packet.getY(), packet.getHp(), packet.getpLevel(), address, port);
         game.level.addEntity(player);
     }
 
     private void handleMove(Packet02Move packet) {
-        this.game.level.movePlayer(packet.getUsername(), packet.getX(), packet.getY(), packet.getNumSteps(),
+        this.game.level.movePlayer(packet.getUID(), packet.getUsername(), packet.getX(), packet.getY(), packet.getNumSteps(),
                 packet.isMoving(), packet.getMovingDir());
     }
 }

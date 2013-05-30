@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import tp.boundaries.Game;
@@ -56,13 +57,13 @@ public class GameServer extends Thread {
             packet = new Packet00Login(data);
             System.out.println("[" + address.getHostAddress() + ":" + port + "] "
                     + ((Packet00Login) packet).getUsername() + " has connected...");
-            PlayerMP player = new PlayerMP(game.level, 100, 100, ((Packet00Login) packet).getUsername(), ((Packet00Login) packet).getHp(), ((Packet00Login) packet).getpLevel(), address, port);
+            PlayerMP player = new PlayerMP(game.level, ((Packet00Login) packet).getUID(), ((Packet00Login) packet).getUsername(), ((Packet00Login) packet).getX(), ((Packet00Login) packet).getY(), ((Packet00Login) packet).getHp(), ((Packet00Login) packet).getpLevel(), address, port);
             this.addConnection(player, (Packet00Login) packet);
             break;
         case DISCONNECT:
             packet = new Packet01Disconnect(data);
             System.out.println("[" + address.getHostAddress() + ":" + port + "] "
-                    + ((Packet01Disconnect) packet).getUsername() + " has left...");
+                    + ((Packet01Disconnect) packet).getUID() + " has left...");
             this.removeConnection((Packet01Disconnect) packet);
             break;
         case MOVE:
@@ -73,8 +74,9 @@ public class GameServer extends Thread {
 
     public void addConnection(PlayerMP player, Packet00Login packet) {
         boolean alreadyConnected = false;
+        System.out.println(Arrays.toString(packet.getData()));
         for (PlayerMP p : this.connectedPlayers) {
-            if (player.getUsername().equalsIgnoreCase(p.getUsername())) {
+            if (player.getUID() == p.getUID()) {
                 if (p.ipAddress == null) {
                     p.ipAddress = player.ipAddress;
                 }
@@ -86,36 +88,38 @@ public class GameServer extends Thread {
                 // relay to the current connected player that there is a new
                 // player
                 sendData(packet.getData(), p.ipAddress, p.port);
+                //sendDataToAllClients(packet.getData());
 
                 // relay to the new player that the currently connect player
                 // exists
-                packet = new Packet00Login(p.getUsername(), p.getHp(), p.getpLevel(), p.x, p.y);
-                sendData(packet.getData(), player.ipAddress, player.port);
+                Packet00Login packets = new Packet00Login(p.getUID(), p.getUsername(), p.getHp(), p.getpLevel(), p.x, p.y);
+                sendData(packets.getData(), player.ipAddress, player.port);
             }
         }
         if (!alreadyConnected) {
+        	//sendDataToAllClients(packet.getData());
             this.connectedPlayers.add(player);
         }
     }
 
     public void removeConnection(Packet01Disconnect packet) {
-        this.connectedPlayers.remove(getPlayerMPIndex(packet.getUsername()));
+        this.connectedPlayers.remove(getPlayerMPIndex(packet.getUID()));
         packet.writeData(this);
     }
 
-    public PlayerMP getPlayerMP(String username) {
+    public PlayerMP getPlayerMP(int uID) {
         for (PlayerMP player : this.connectedPlayers) {
-            if (player.getUsername().equals(username)) {
+            if (player.getUID() == uID) {
                 return player;
             }
         }
         return null;
     }
 
-    public int getPlayerMPIndex(String username) {
+    public int getPlayerMPIndex(int uID) {
         int index = 0;
         for (PlayerMP player : this.connectedPlayers) {
-            if (player.getUsername().equals(username)) {
+            if (player.getUID() == uID) {
                 break;
             }
             index++;
@@ -125,7 +129,6 @@ public class GameServer extends Thread {
 
     public void sendData(byte[] data, InetAddress ipAddress, int port) {
         if (!game.isApplet) {
-
             DatagramPacket packet = new DatagramPacket(data, data.length, ipAddress, port);
             try {
                 this.socket.send(packet);
@@ -142,9 +145,10 @@ public class GameServer extends Thread {
     }
 
     private void handleMove(Packet02Move packet) {
-        if (getPlayerMP(packet.getUsername()) != null) {
-            int index = getPlayerMPIndex(packet.getUsername());
+        if (getPlayerMP(packet.getUID()) != null) {
+            int index = getPlayerMPIndex(packet.getUID());
             PlayerMP player = this.connectedPlayers.get(index);
+            player.setUID(packet.getUID());
             player.x = packet.getX();
             player.y = packet.getY();
             player.setMoving(packet.isMoving());

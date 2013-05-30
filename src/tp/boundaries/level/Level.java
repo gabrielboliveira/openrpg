@@ -138,10 +138,10 @@ public class Level {
         this.getEntities().add(entity);
     }
 
-    public synchronized void removePlayerMP(String username) {
+    public synchronized void removePlayerMP(int uID) {
         int index = 0;
         for (Entity e : getEntities()) {
-            if (e instanceof PlayerMP && ((PlayerMP) e).getUsername().equals(username)) {
+            if (e instanceof PlayerMP && ((PlayerMP) e).getUID() == uID) {
                 break;
             }
             index++;
@@ -149,10 +149,10 @@ public class Level {
         this.getEntities().remove(index);
     }
 
-    private int getPlayerMPIndex(String username) {
+    private int getPlayerMPIndex(int uID) {
         int index = 0;
         for (Entity e : getEntities()) {
-            if (e instanceof PlayerMP && ((PlayerMP) e).getUsername().equals(username)) {
+            if (e instanceof PlayerMP && ((PlayerMP) e).getUID() == uID) {
                 break;
             }
             index++;
@@ -160,9 +160,10 @@ public class Level {
         return index;
     }
 
-    public synchronized void movePlayer(String username, int x, int y, int numSteps, boolean isMoving, int movingDir) {
-        int index = getPlayerMPIndex(username);
+    public synchronized void movePlayer(int uID, String username, int x, int y, int numSteps, boolean isMoving, int movingDir) {
+        int index = getPlayerMPIndex(uID);
         PlayerMP player = (PlayerMP) this.getEntities().get(index);
+        player.setUID(uID);
         player.x = x;
         player.y = y;
         player.setMoving(isMoving);

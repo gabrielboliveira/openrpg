@@ -19,8 +19,8 @@ public class Player extends Mob {
     private String username;
     private int hp, pLevel;
 
-    public Player(Level level, int x, int y, InputHandler input, String username, int hp, int pLevel) {
-        super(level, "Player", hp, pLevel, x, y, 1);
+    public Player(Level level, int uID, int x, int y, InputHandler input, String username, int hp, int pLevel) {
+        super(level, uID, "Player", hp, pLevel, x, y, 1);
         this.input = input;
         this.username = username;
         this.hp = hp;
@@ -48,7 +48,7 @@ public class Player extends Mob {
             move(xa, ya);
             isMoving = true;
 
-            Packet02Move packet = new Packet02Move(this.getUsername(), this.getHp(), this.getpLevel(), this.x, this.y, this.numSteps, this.isMoving,
+            Packet02Move packet = new Packet02Move(this.getUID(), this.getUsername(), this.getHp(), this.getpLevel(), this.x, this.y, this.numSteps, this.isMoving,
                     this.movingDir);
             packet.writeData(Game.game.socketClient);
         } else {
@@ -181,5 +181,5 @@ public class Player extends Mob {
     public String getUsername() {
         return this.username;
     }
-     
+
 }

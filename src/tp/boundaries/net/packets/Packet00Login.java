@@ -6,20 +6,22 @@ import tp.boundaries.net.GameServer;
 public class Packet00Login extends Packet {
 
     private String username;
-    private int x, y, hp, pLevel;
+    private int x, y, hp, pLevel, uID;
 
     public Packet00Login(byte[] data) {
         super(00);
         String[] dataArray = readData(data).split(",");
-        this.username = dataArray[0];
-        this.hp = Integer.parseInt(dataArray[1]);
-        this.pLevel = Integer.parseInt(dataArray[2]);
-        this.x = Integer.parseInt(dataArray[3]);
-        this.y = Integer.parseInt(dataArray[4]);
+        this.uID = Integer.parseInt(dataArray[0]);
+        this.username = dataArray[1];
+        this.hp = Integer.parseInt(dataArray[2]);
+        this.pLevel = Integer.parseInt(dataArray[3]);
+        this.x = Integer.parseInt(dataArray[4]);
+        this.y = Integer.parseInt(dataArray[5]);
     }
 
-    public Packet00Login(String username, int hp, int pLevel, int x, int y) {
+    public Packet00Login(int uID, String username, int hp, int pLevel, int x, int y) {
         super(00);
+        this.uID = uID;
         this.username = username;
         this.hp = hp;
         this.pLevel = pLevel;
@@ -39,7 +41,11 @@ public class Packet00Login extends Packet {
 
     @Override
     public byte[] getData() {
-        return ("00" + this.username + "," + getHp() + "," + getpLevel() + "," + getX() + "," + getY()).getBytes();
+        return ("00" + this.uID + "," + this.username + "," + getHp() + "," + getpLevel() + "," + getX() + "," + getY()).getBytes();
+    }
+    
+    public int getUID(){
+    	return this.uID;
     }
 
     public String getUsername() {

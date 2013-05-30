@@ -5,16 +5,16 @@ import tp.boundaries.net.GameServer;
 
 public class Packet01Disconnect extends Packet {
 
-    private String username;
+    private int uID;
 
     public Packet01Disconnect(byte[] data) {
         super(01);
-        this.username = readData(data);
+        this.uID = Integer.parseInt(readData(data));
     }
 
-    public Packet01Disconnect(String username) {
+    public Packet01Disconnect(int uID) {
         super(01);
-        this.username = username;
+        this.uID = uID;
     }
 
     @Override
@@ -29,11 +29,11 @@ public class Packet01Disconnect extends Packet {
 
     @Override
     public byte[] getData() {
-        return ("01" + this.username).getBytes();
+        return ("01" + this.uID).getBytes();
     }
 
-    public String getUsername() {
-        return username;
+    public int getUID() {
+        return this.uID;
     }
 
 }

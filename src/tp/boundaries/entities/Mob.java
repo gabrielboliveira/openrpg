@@ -5,6 +5,7 @@ import tp.boundaries.level.tiles.Tile;
 
 public abstract class Mob extends Entity {
 
+	protected int uID;
     protected String name;
     protected int speed;
     protected int hp = 100;
@@ -14,8 +15,9 @@ public abstract class Mob extends Entity {
     protected int movingDir = 1;
     protected int scale = 1;
 
-    public Mob(Level level, String name, int hp, int pLevel, int x, int y, int speed) {
+    public Mob(Level level, int uID, String name, int hp, int pLevel, int x, int y, int speed) {
         super(level);
+        this.uID = uID;
         this.name = name;
         this.hp = hp;
         this.pLevel = pLevel;
@@ -96,4 +98,12 @@ public abstract class Mob extends Entity {
         this.movingDir = movingDir;
     }
 
+    public int getUID(){
+    	return this.uID;
+    }
+    
+    public void setUID(int uID)
+    {
+    	this.uID = uID;
+    }
 }

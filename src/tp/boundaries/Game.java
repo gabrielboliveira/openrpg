@@ -26,7 +26,7 @@ public class Game extends Canvas implements Runnable {
     public static final int WIDTH = 350;
     public static final int HEIGHT = WIDTH / 12 * 9;
     public static final int SCALE = 1;
-    public static final String NAME = "Boundaries";
+    public static final String NAME = "OpenRPG";
     public static final Dimension DIMENSIONS = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
     public static Game game;
 
@@ -47,11 +47,18 @@ public class Game extends Canvas implements Runnable {
     public Level level;
     public Player player;
 
-    public GameClient socketClient;
-    public GameServer socketServer;
+    public GameClient socketClient = null;
+    public GameServer socketServer = null;
 
     public boolean debug = true;
     public boolean isApplet = false;
+    
+    public StartPage startPage;
+    public boolean iniciaServidor = false;
+    public String username;
+    public String ip;
+    public int porta;
+    public boolean jogoIniciado = false;
 
     public void init() {
         game = this;
@@ -70,7 +77,7 @@ public class Game extends Canvas implements Runnable {
         screen = new Screen(WIDTH, HEIGHT, new SpriteSheet("/sprite_sheet.png"));
         input = new InputHandler(this);
         level = new Level("/levels/water_test_level.png");
-        player = new PlayerMP(level, (int)(Math.random() * ((50000000) + 1)), JOptionPane.showInputDialog(this, "Por favor, digite o seu nome:"), 100, 100, input, 100, 1, null, -1);
+        player = new PlayerMP(level, (int)(Math.random() * ((50000000) + 1)), username, 100, 100, input, 100, 1, null, -1);
         level.addEntity(player);
         if (!isApplet) {
             Packet00Login loginPacket = new Packet00Login(player.getUID(), player.getUsername(), player.getHp(), player.getpLevel(), player.x, player.y);
@@ -82,19 +89,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     public synchronized void start() {
-        running = true;
-
-        thread = new Thread(this, NAME + "_main");
-        thread.start();
-        if (!isApplet) {
-            if (JOptionPane.showConfirmDialog(this, "Você deseja iniciar o servidor?") == 0) {
-                socketServer = new GameServer(this);
-                socketServer.start();
-            }
-
-            socketClient = new GameClient(this, "localhost");
-            socketClient.start();
-        }
+    	startPage = new StartPage(this);
     }
 
     public synchronized void stop() {
@@ -106,9 +101,27 @@ public class Game extends Canvas implements Runnable {
             e.printStackTrace();
         }
     }
+    
+	public void action() {
+		if (!isApplet) {
+        	if (iniciaServidor) {
+                socketServer = new GameServer(this, porta);
+                socketServer.start();
+            }
+
+            socketClient = new GameClient(this, this.ip, this.porta);
+            socketClient.start();
+        }
+		running = true;
+		jogoIniciado = true;
+		setVisible(true);
+
+        thread = new Thread(this, NAME + "_main");
+        thread.start();
+	}
 
     public void run() {
-        long lastTime = System.nanoTime();
+    	long lastTime = System.nanoTime();
         double nsPerTick = 1000000000D / 60D;
 
         int ticks = 0;
@@ -116,7 +129,7 @@ public class Game extends Canvas implements Runnable {
 
         long lastTimer = System.currentTimeMillis();
         double delta = 0;
-
+        
         init();
 
         while (running) {
@@ -156,7 +169,8 @@ public class Game extends Canvas implements Runnable {
     	// evita estouro do int
     	if( tickCount == Integer.MAX_VALUE)
     		tickCount = 0;
-        tickCount++;
+    	else
+    		tickCount++;
         level.tick();
     }
 

@@ -20,9 +20,11 @@ public class GameClient extends Thread {
     private InetAddress ipAddress;
     private DatagramSocket socket;
     private Game game;
+    private int porta;
 
-    public GameClient(Game game, String ipAddress) {
+    public GameClient(Game game, String ipAddress, int port) {
         this.game = game;
+        this.porta = port;
         try {
             this.socket = new DatagramSocket();
             this.ipAddress = InetAddress.getByName(ipAddress);
@@ -73,7 +75,7 @@ public class GameClient extends Thread {
 
     public void sendData(byte[] data) {
         if (!game.isApplet) {
-            DatagramPacket packet = new DatagramPacket(data, data.length, ipAddress, 1331);
+            DatagramPacket packet = new DatagramPacket(data, data.length, ipAddress, this.porta);
             try {
                 socket.send(packet);
             } catch (IOException e) {

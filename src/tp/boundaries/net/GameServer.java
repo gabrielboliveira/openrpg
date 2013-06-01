@@ -22,11 +22,13 @@ public class GameServer extends Thread {
     private DatagramSocket socket;
     private Game game;
     private List<PlayerMP> connectedPlayers = new ArrayList<PlayerMP>();
+    private int port;
 
-    public GameServer(Game game) {
+    public GameServer(Game game, int port) {
         this.game = game;
+        this.port = port;
         try {
-            this.socket = new DatagramSocket(1331);
+            this.socket = new DatagramSocket(port);
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -74,7 +76,6 @@ public class GameServer extends Thread {
 
     public void addConnection(PlayerMP player, Packet00Login packet) {
         boolean alreadyConnected = false;
-        System.out.println(Arrays.toString(packet.getData()));
         for (PlayerMP p : this.connectedPlayers) {
             if (player.getUID() == p.getUID()) {
                 if (p.ipAddress == null) {

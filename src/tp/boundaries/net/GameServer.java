@@ -150,6 +150,7 @@ public class GameServer extends Thread {
             int index = getPlayerMPIndex(packet.getUID());
             PlayerMP player = this.connectedPlayers.get(index);
             player.setUID(packet.getUID());
+            player.hp = packet.getHp();
             player.x = packet.getX();
             player.y = packet.getY();
             player.setMoving(packet.isMoving());

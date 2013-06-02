@@ -17,13 +17,12 @@ public class Player extends Mob {
     protected boolean isLavaing = false;
     private int tickCount = 0;
     private String username;
-    private int hp, pLevel;
+    private int pLevel;
 
     public Player(Level level, int uID, int x, int y, InputHandler input, String username, int hp, int pLevel) {
         super(level, uID, "Player", hp, pLevel, x, y, 1);
         this.input = input;
         this.username = username;
-        this.hp = hp;
         this.pLevel = pLevel;
     }
 

@@ -8,7 +8,7 @@ public abstract class Mob extends Entity {
 	protected int uID;
     protected String name;
     protected int speed;
-    protected int hp = 100;
+    public int hp = 100;
     protected int pLevel = 1;
     protected int numSteps = 0;
     protected boolean isMoving;
@@ -67,7 +67,7 @@ public abstract class Mob extends Entity {
     }
     
     public int getHp() {
-        return hp;
+        return this.hp;
     }
     
     public int getpLevel() {

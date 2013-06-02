@@ -103,21 +103,21 @@ public class StartPage implements ActionListener {
 						txtIP.grabFocus();
 					}
 				}
-				if(port.length() == 0){
-					JOptionPane.showMessageDialog(game.frame, "Digite a porta!");
-					txtPorta.grabFocus();
-				} else {
-					try {
-						this.game.porta = Integer.parseInt(port);
+				try {
+					this.game.porta = Integer.parseInt(port);
+					if(this.game.porta < 1024 || this.game.porta > 49152) {
+						JOptionPane.showMessageDialog(game.frame, "A porta deve estar entre 1024 e 49152!");
+						txtPorta.grabFocus();
+					} else {
 						this.game.username = name;
 						this.game.iniciaServidor = btnNovoServ.isSelected();
 						this.game.ip = serv;
 						this.panel.setVisible(false);
 						this.game.action();
-					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(game.frame, "Digite a porta corretamente!");
-						txtPorta.grabFocus();
 					}
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(game.frame, "Digite a porta corretamente!");
+					txtPorta.grabFocus();
 				}
 			}
 		} else if(e.getSource() == btnFechar) {

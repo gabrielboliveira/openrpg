@@ -98,11 +98,12 @@ public abstract class Mob extends Entity {
         this.movingDir = movingDir;
     }
 
-    public int getUID() {
+    public int getUID(){
     	return this.uID;
     }
     
-    public void setUID(int uID) {
+    public void setUID(int uID)
+    {
     	this.uID = uID;
     }
 }
